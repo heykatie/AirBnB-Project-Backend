@@ -179,7 +179,7 @@ router.get('/', validateQuery, async (req, res)=> {
       spotWizRating.previewImage = null;
     }
     spotsWizRatings.push(spotWizRating);
-    
+
   };
   return res.json({
     'Spots': spotsWizRatings,
@@ -193,7 +193,7 @@ router.post('/', requireAuth, validateSpot, async (req, res) => {
   const { user } = req;
   const {address, city, state, country, lat, lng, name, description, price} = req.body;
 
-  try{
+  // try{
     const id = user.id;
     const newSpot = await Spot.create({
       ownerId: id,
@@ -208,10 +208,10 @@ router.post('/', requireAuth, validateSpot, async (req, res) => {
       price
     });
 
-    res.status(201).json(newSpot);
-  } catch(err) {
-    return res.json({errors: err.errors});
-  }
+    return res.status(201).json(newSpot);
+  // } catch(err) {
+  //   return res.json({errors: err.errors});
+  // }
 });
 
 //get all spots owned by the current user
