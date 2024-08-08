@@ -153,32 +153,32 @@ router.put('/:bookingId', requireAuth, validateBooking, async(req, res)=> {
       userId: {
         [Op.ne]: user.Id
       },
-      // [Op.or]: [
-      //   {
-          [Op.and]: [ // newStart < startDate < endDate < newEnd
+      [Op.or]: [
+        {
+          [Op.and]: [ // newStart <= startDate < endDate <= newEnd
             {
               startDate: {
-                [Op.gt]: newStartDate
+                [Op.gte]: newStartDate
               }
             },
             {
               endDate: {
-                [Op.lt]: newEndDate
+                [Op.lte]: newEndDate
               }
             }
           ]
-      //   },
-      //   {
-      //     [Op.and]: [ // startDate < newStart < newEnd < endDate
-      //       {
-      //         startDate: newStartDate
-      //       },
-      //       {
-      //         endDate: newEndDate
-      //       }
-      //     ]
-      //   }
-      // ]
+        },
+        {
+          [Op.and]: [ // startDate < newStart < newEnd < endDate
+            {
+              startDate: newStartDate
+            },
+            {
+              endDate: newEndDate
+            }
+          ]
+        }
+      ]
     }
   });
 
@@ -208,7 +208,7 @@ router.put('/:bookingId', requireAuth, validateBooking, async(req, res)=> {
     await thisBooking.update(req.body);
     return res.json(thisBooking);
   }
-  if (newStartDate === thisBooking.startDate && newEndDate > thisBooking.endDate) {
+  if (newStartDate === thisBooking.startDate && newEndDate < thisBooking.endDate) {
     await thisBooking.update(req.body);
     return res.json(thisBooking);
   }
